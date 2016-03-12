@@ -4,7 +4,6 @@ load rigid_data
 [R,C,depth]=size(vid);
 n = depth;
 error = {};
-
 i =1 ;
 vid_stable(:,:,i) = vid(:,:,1);
 for i = 2:n
@@ -13,8 +12,7 @@ error{i} = zeros(11,11,7);
     for t_x = -5:5
        for t_y = -5:5
            for theta = -3:3
-            %t_x,t_y
-            data_1 = vid_stable(:,:,i-1);
+            data_1 = vid(:,:,i-1);
             data_2 = vid(:,:,i);
             data_1 = imtranslate(data_1,[t_x,t_y]);
             data_1 = imrotate(data_1,theta,'bilinear','crop');

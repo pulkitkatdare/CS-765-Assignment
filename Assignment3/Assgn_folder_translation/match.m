@@ -8,7 +8,7 @@
 %
 % Example: match('scene.pgm','book.pgm');
 
-function [num,match,Rows, Columns] = match(image1, image2)
+function [num,match,data1,data2] = match(image1, image2)
 
 % Find SIFT keypoints for each image
 [im1, des1, loc1] = sift(image1);
@@ -45,17 +45,16 @@ im3 = appendimages(im1,im2);
 colormap('gray');
 imagesc(im3);
 hold on;
+[rows1,cols1] = size(im1);
 k = 0 ;
 Rows = zeros(2,1);
-Columns = zeros(2,1);
-cols1 = size(im1,2);
 for i = 1: size(des1,1)
   if (match(i) > 0)
     line([loc1(i,2) loc2(match(i),2)+cols1], ...
          [loc1(i,1) loc2(match(i),1)], 'Color', 'c');
      k = k +1 ;
-     Rows(:,k) = [loc1(i,1) ; loc2(match(i),1)];
-     Columns(:,k) = [loc1(i,2) ; loc2(match(i),2)];
+     data1(k,:) = [loc1(i,1) ; loc1(i,2)];
+     data2(k,:) = [loc2(match(i),1) ; loc2(match(i),2)];
      
   end
 end

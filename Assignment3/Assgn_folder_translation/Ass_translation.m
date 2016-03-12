@@ -9,25 +9,24 @@ error = {};
 i =1 ;
 %t_x = 15;
 %t_y = 15;
-vid(:,:,i) = rgb2gray(imread('1.jpg'));
+tx = 0 ; 
+ty= 0 ; 
 for i = 2:n
 fprintf('%d frames left.\n', n-i);
 error{i} = zeros(11,11);
     for t_x = -5:5
        for t_y = -5:5
-            %t_x,t_y
-            data_1 = vid(:,:,i-1);
-            data_2 = video.frames(i).cdata(:,:,1);%rgb2gray(imread(strcat(int2str(i),'.jpg')));
-            imwrite(data_2,'data_2.jpg');
+
+            data_1 = video.frames(i-1).cdata(:,:,1);
+            data_2 = video.frames(i).cdata(:,:,1);
             data_1 = imtranslate(data_1,[t_x,t_y]);
-            imwrite(data_1,'data_1.jpg');
             count = 0 ;
             for l = 1:R
                 for m = 1:C
-                if(data_1(l,m) == 0)
-                data_2(l,m)=0;
-                count = count +1;
-                end
+                    if(data_1(l,m) == 0)
+                        data_2(l,m)=0;
+                        count = count +1;
+                    end
                 end
             end
             t_data = sum(sum((data_1-data_2).*(data_1-data_2)));
@@ -36,12 +35,44 @@ error{i} = zeros(11,11);
        end
     end
     [r,c] = find(error{i}==min(error{i}(:)));
-    tx = r-6;
-    ty = c-6;
-    vid(:,:,i) = imtranslate(video.frames(i-1).cdata(:,:,1),[tx,ty]);
+    tx(i) = r-6 ;
+    ty(i) = c-6 ;
+    %vid(:,:,i) = imtranslate(video.frames(i-1).cdata(:,:,1),[tx,ty]);
+   
     %vid(:,:,i) = imrotate(vid(:,:,i-1),rot,'bilinear','crop');
     %A = [cosd(rot) -sind(rot) tx ; sind(rot) cosd(rot) ty ; 0 0 1];
 end
+
+%%
+txsmooth = smooth(tx);
+tysmooth = smooth(ty);
+txactual = tx - txsmooth'; 
+tyactual = ty -tysmooth';
+vid(:,:,1) = video.frames(1).cdata(:,:,1);
+for i = 2: n 
+i
+sumx = sum(txactual(1:i));
+sumy = sum(tyactual(1:i));
+vid(:,:,i)=imtranslate(video.frames(i).cdata(:,:,1),[-sumx,-sumy]);
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 %%
 %{
