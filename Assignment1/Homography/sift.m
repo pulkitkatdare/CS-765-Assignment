@@ -20,12 +20,14 @@ function [image, descriptors, locs] = sift(imageFile)
 
 % Load image
 image = imread(imageFile);
+%%image = rgb2gray(image);
 
 % If you have the Image Processing Toolbox, you can uncomment the following
 %   lines to allow input of color images, which will be converted to grayscale.
  %if isrgb(image)
   %  image = rgb2gray(image);
 % end
+
 
 [rows, cols] = size(image); 
 
@@ -35,7 +37,7 @@ if f == -1
     error('Could not create file tmp.pgm.');
 end
 fprintf(f, 'P5\n%d\n%d\n255\n', cols, rows);
-fwrite(f, image', 'uint8');
+fwrite(f, permute(image,[2,1,3]), 'uint8');
 fclose(f);
 
 % Call keypoints executable
